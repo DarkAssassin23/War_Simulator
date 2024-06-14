@@ -34,9 +34,18 @@ int main(int argc, char **argv)
                 printf("Error: Missing argument for \'-s\'\n");
                 return 1;
             }
-            int tmp = std::stoi(argv[x + 1]);
-            rounds = std::max(tmp, rounds);
-            x++;
+            try
+            {
+                int tmp = std::stoi(argv[x + 1]);
+                rounds = std::max(tmp, rounds);
+                x++;
+            }
+            catch (const std::invalid_argument &e)
+            {
+                std::cerr << "Error: Invalid argument after \'-s\'\n"
+                          << e.what() << "\n";
+                return 1;
+            }
         }
         else if (arg == "-h" || arg == "--help")
         {
