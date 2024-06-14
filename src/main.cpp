@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         {
             if ((x + 1) == argc)
             {
-                printf("Error: Missing argument for \'-s\'");
+                printf("Error: Missing argument for \'-s\'\n");
                 return 1;
             }
             int tmp = std::stoi(argv[x + 1]);
