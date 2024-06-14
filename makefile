@@ -16,11 +16,13 @@ OBJECTS = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCS))
 
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	@echo $(CXX) "     "$@
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
+	@$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
+	@echo "Created: "$@
 
 clean:
 	$(RM) -r $(OBJDIR) $(BINDIR)
