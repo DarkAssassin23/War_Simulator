@@ -3,6 +3,15 @@
 
 #include "deck.h"
 
+/// @enum GameResult
+/// @brief Possible results from a Game
+enum GameResult
+{
+    GAME_RESULT_TIE = 0,
+    GAME_RESULT_P1_W = 1,
+    GAME_RESULT_P2_W = 2
+};
+
 /// @class Game
 /// @brief Class containing the came logic for War
 class Game
@@ -16,16 +25,22 @@ class Game
     /// @param p1 The first player
     /// @param p2 The second player
     /// @param simulate Should the Game be played simulated (default: true)
-    Game(Deck &d, Player &p1, Player &p2, bool simulate = true);
+    /// @param v Should the Game run in verbose mode (default: true)
+    Game(Deck &d, Player &p1, Player &p2, bool simulate = true, bool v = true);
 
     /// @brief Create the game given two players
     /// @param p1 The first player
     /// @param p2 The second player
     /// @param simulate Should the Game be played simulated (default: true)
-    Game(Player &p1, Player &p2, bool simulate = true);
+    /// @param v Should the Game run in verbose mode (default: true)
+    Game(Player &p1, Player &p2, bool simulate = true, bool v = true);
 
     /// @brief Play the game, simulating all the turns until one player wins
-    void play();
+    void play(void);
+
+    /// @brief Get the winner of the game
+    /// @return 1 for Player 1; 2 for Player 2
+    int getWinner(void);
 
   private:
     void takeTurn(int &turnNum);
@@ -55,4 +70,5 @@ class Game
     Player player2; //!< The second player
     bool draw;      //!< Is the game a tie?
     bool sim;       //!< Simulate the whole game
+    bool verbose;   //!< Print out turn-by-turn info
 };

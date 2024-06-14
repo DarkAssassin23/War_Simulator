@@ -10,16 +10,17 @@ Game::Game(void)
     deck.dealCards(player1, player2);
     draw = false;
     sim = true;
+    verbose = true;
 }
 
-Game::Game(Deck &d, Player &p1, Player &p2, bool simulate)
-    : deck(d), player1(p1), player2(p2), draw(false), sim(simulate)
+Game::Game(Deck &d, Player &p1, Player &p2, bool simulate, bool v)
+    : deck(d), player1(p1), player2(p2), draw(false), sim(simulate), verbose(v)
 {
     deck.dealCards(player1, player2);
 }
 
-Game::Game(Player &p1, Player &p2, bool simulate)
-    : player1(p1), player2(p2), draw(false), sim(simulate)
+Game::Game(Player &p1, Player &p2, bool simulate, bool v)
+    : player1(p1), player2(p2), draw(false), sim(simulate), verbose(v)
 {
 }
 
@@ -39,12 +40,23 @@ void Game::play(void)
         if (count > TURN_LIMIT)
             draw = true;
     }
+
+    if (verbose)
+    {
+        if (draw)
+            std::cout << "Game Over: Draw\n";
+        else if (!player1.outOfCards())
+            std::cout << "Game Over: Player 1 Wins!\n";
+        else if (!player2.outOfCards())
+            std::cout << "Game Over: Player 2 Wins!\n";
+    }
+}
+
+int Game::getWinner(void)
+{
     if (draw)
-        std::cout << "Game Over: Draw\n";
-    else if (!player1.outOfCards())
-        std::cout << "Game Over: Player 1 Wins!\n";
-    else if (!player2.outOfCards())
-        std::cout << "Game Over: Player 2 Wins!\n";
+        return GAME_RESULT_TIE;
+    return (!player1.emptyHand()) ? GAME_RESULT_P1_W : GAME_RESULT_P2_W;
 }
 
 void Game::takeTurn(int &turnNum)
@@ -52,43 +64,52 @@ void Game::takeTurn(int &turnNum)
     int p1Card = player1.playCard();
     int p2Card = player2.playCard();
 
-    std::cout << "Turn: " << turnNum << "\n"
-              << "Cards Played: " << cardToString(p1Card) << ", "
-              << cardToString(p2Card) << "\nWinner: ";
+    if (verbose)
+        std::cout << "Turn: " << turnNum << "\n"
+                  << "Cards Played: " << cardToString(p1Card) << ", "
+                  << cardToString(p2Card) << "\nWinner: ";
 
     int cards[] = { p1Card, p2Card };
 
     if (p1Card > p2Card)
     {
         player1.takeWinnings(cards, 2);
-        std::cout << "Player 1\n";
+        if (verbose)
+            std::cout << "Player 1\n";
     }
     else if (p1Card < p2Card)
     {
         player2.takeWinnings(cards, 2);
-        std::cout << "Player 2\n";
+        if (verbose)
+            std::cout << "Player 2\n";
     }
     else
     {
-        std::cout << "Tie, It's War!!\n";
+        if (verbose)
+            std::cout << "Tie, It's War!!\n";
         if (player1.getHandSize() == 0 && player2.getHandSize() == 0)
             draw = true;
         else if (player1.getHandSize() == 0)
         {
             player2.takeWinnings(cards, 2);
-            std::cout << "Player 2 Wins\n";
+            if (verbose)
+                std::cout << "Player 2 Wins\n";
         }
         else if (player2.getHandSize() == 0)
         {
             player1.takeWinnings(cards, 2);
-            std::cout << "Player 1 Wins\n";
+            if (verbose)
+                std::cout << "Player 1 Wins\n";
         }
         else
             war(cards, 2);
     }
-    std::cout << "Cards Remaining:\n";
-    std::cout << "    Player 1: " << player1.getHandSize() << "\n";
-    std::cout << "    Player 2: " << player2.getHandSize() << "\n";
+    if (verbose)
+    {
+        std::cout << "Cards Remaining:\n";
+        std::cout << "    Player 1: " << player1.getHandSize() << "\n";
+        std::cout << "    Player 2: " << player2.getHandSize() << "\n";
+    }
     turnNum++;
     if (!sim)
         std::cin.get();
@@ -118,8 +139,9 @@ void Game::war(int *cards, size_t numCards)
         p1Card = player1.playCard();
         p2Card = player2.playCard();
 
-        std::cout << "Cards Played: " << cardToString(p1Card) << ", "
-                  << cardToString(p2Card) << "\nWinner: ";
+        if (verbose)
+            std::cout << "Cards Played: " << cardToString(p1Card) << ", "
+                      << cardToString(p2Card) << "\nWinner: ";
 
         winningsPot.push(p1Card);
         winningsPot.push(p2Card);
@@ -141,16 +163,19 @@ void Game::war(int *cards, size_t numCards)
         if (p1Card > p2Card)
         {
             player1.takeWinnings(cardWinnings, potSize);
-            std::cout << "Player 1\n";
+            if (verbose)
+                std::cout << "Player 1\n";
         }
         else if (p1Card < p2Card)
         {
             player2.takeWinnings(cardWinnings, potSize);
-            std::cout << "Player 2\n";
+            if (verbose)
+                std::cout << "Player 2\n";
         }
         else
         {
-            std::cout << "Tie, It's War!!\n";
+            if (verbose)
+                std::cout << "Tie, It's War!!\n";
             if (player1.getHandSize() == 0 && player2.getHandSize() == 0)
             {
                 draw = true;
@@ -159,13 +184,15 @@ void Game::war(int *cards, size_t numCards)
             else if (player1.getHandSize() == 0)
             {
                 player2.takeWinnings(cardWinnings, potSize);
-                std::cout << "Player 2 Wins War\n";
+                if (verbose)
+                    std::cout << "Player 2 Wins War\n";
                 p1Card = -1;
             }
             else if (player2.getHandSize() == 0)
             {
                 player1.takeWinnings(cardWinnings, potSize);
-                std::cout << "Player 1 Wins War\n";
+                if (verbose)
+                    std::cout << "Player 1 Wins War\n";
                 p2Card = -1;
             }
         }
