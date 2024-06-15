@@ -112,12 +112,12 @@ void outputResults(int rounds, int p1, int p2, int t)
 {
     const int pad = 8;
     printf("%sStats:\n", (rounds == 1) ? "\n" : "");
-    printf("%*s%*s%*s%*s\n", pad, "Player", pad, "Wins", pad, "Losses", pad,
-           "Ties");
-    printf("%*s%*d%*d%*d\n", pad, "Player 1", pad, p1, pad, (rounds - p1) - t,
-           pad, t);
-    printf("%*s%*d%*d%*d\n", pad, "Player 2", pad, p2, pad, (rounds - p2) - t,
-           pad, t);
+    printf("%*s%*s%*s%*s%*s\n", pad, "Player", pad, "Wins", pad, "Losses", pad,
+           "Ties", pad, "Win %");
+    printf("%*s%*d%*d%*d%*.2f\n", pad, "Player 1", pad, p1, pad,
+           (rounds - p1) - t, pad, t, pad, (((p1 * 1.0) / rounds) * 100.0));
+    printf("%*s%*d%*d%*d%*.2f\n", pad, "Player 2", pad, p2, pad,
+           (rounds - p2) - t, pad, t, pad, (((p2 * 1.0) / rounds) * 100.0));
     printf("Overall Winner: ");
     if (p1 == p2)
         printf("Tie\n");
