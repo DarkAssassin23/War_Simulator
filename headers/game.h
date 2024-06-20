@@ -43,6 +43,11 @@ class Game
     int getWinner(void);
 
   private:
+    /// @brief Perform a single turn with each player playing their top card
+    ///
+    /// Each player lays down their card. If they are the same they go to
+    /// war until one player runs out of cards or one player wins
+    /// @param turnNum The counter for what turn of the game is on
     void takeTurn(int &turnNum);
 
     /// @brief If both players put down the same card the go to war
